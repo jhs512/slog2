@@ -1,5 +1,9 @@
 package com.ll.slog2.domain.post.post.controller;
 
+import com.ll.slog2.domain.post.post.dto.PostDto;
+import com.ll.slog2.domain.post.post.entity.Post;
+import com.ll.slog2.domain.post.post.service.PostService;
+import com.ll.slog2.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,30 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ApiV1PostController {
+    private final PostService postService;
+
+    public record GetPostsResBody(List<PostDto> items) {
+    }
 
     @GetMapping
-    public Map<String, Object> getPosts() {
-        Map<String, Object> rs = Map.of(
-                "data", Map.of(
-                        "items", List.of(
-                                Map.of(
-                                        "id", 1,
-                                        "createDate", "2021-08-01T00:00:00",
-                                        "modifyDate", "2021-08-01T00:00:00",
-                                        "authorId", 1,
-                                        "authorName", "author1",
-                                        "title", "title1",
-                                        "body", "body1"
-                                )
-                        )));
+    public RsData<GetPostsResBody> getPosts() {
+        List<Post> posts = postService.findAll();
 
-        return rs;
+        return RsData.of(
+                new GetPostsResBody(
+                        posts.stream().map(PostDto::new).toList()
+                )
+        );
     }
 }
