@@ -23,6 +23,14 @@ class Rq {
 	public getClient() {
 		return client;
 	}
+
+	public getClientWithFetch(fetch: any) {
+		return createClient<paths>({
+			baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+			credentials: 'include',
+			fetch
+		});
+	}
 }
 
 const rq = new Rq();

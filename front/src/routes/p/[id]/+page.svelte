@@ -1,31 +1,24 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { components } from '$lib/backend/apiV1/schema';
-	import rq from '$lib/rq/rq.svelte';
 
-	let post = $state<components['schemas']['PostDto'] | null>(null);
-	let errorMessage = $state<string | null>(null);
+	const { data: pageData } = $props();
 
-	async function getPost() {
-		const { data, error } = await rq.getClient().GET('/api/v1/posts/{id}', {
-			params: {
-				path: {
-					id: parseInt($page.params.id)
-				}
-			}
-		});
-
-		if (data) {
-			post = data.data.item;
-		} else if (error) {
-			errorMessage = error.msg;
-		}
-	}
-
-	$effect(() => {
-		getPost();
-	});
+	const post = pageData.data?.data.item;
+	const errorMessage = pageData.error?.msg;
 </script>
+
+<svelte:head>
+	{#if post}
+		<title>{post.title}</title>
+		<meta
+			name="description"
+			content={post.body.length > 10 ? post.body.substring(0, 10) + '...' : post.body}
+		/>
+	{:else}
+		<title>404</title>
+		<meta name="description" content="404" />
+	{/if}
+</svelte:head>
 
 <h1>{$page.params.id}번 SURL 페이지</h1>
 
