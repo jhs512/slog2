@@ -22,7 +22,7 @@
 <ul>
 	{#each posts as post (post.id)}
 		<li>
-			<a href="/post/{post.id}">{post.id}</a> : {post.title}
+			<a href="/p/{post.id}">{post.id}</a> : {post.title}
 			<br />
 			{post.body}
 		</li>

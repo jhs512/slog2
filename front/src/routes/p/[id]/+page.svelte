@@ -54,6 +54,6 @@
 {/if}
 
 <div>
-	<a href="/post/list">리스트</a>
+	<a href="/p/list">리스트</a>
 	<button type="button" onclick={() => history.back()}>뒤로가기</button>
 </div>
