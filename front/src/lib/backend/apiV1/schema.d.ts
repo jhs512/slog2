@@ -3,54 +3,69 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-	'/api/v1/posts': {
-		/** 다건 조회 */
-		get: operations['getPosts'];
-	};
+  "/api/v1/posts": {
+    /** 다건 조회 */
+    get: operations["getPosts"];
+  };
+  "/api/v1/posts/{id}": {
+    /** 단건 조회 */
+    get: operations["getPost"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
-	schemas: {
-		Empty: Record<string, never>;
-		RsDataEmpty: {
-			resultCode: string;
-			/** Format: int32 */
-			statusCode: number;
-			msg: string;
-			data: components['schemas']['Empty'];
-		};
-		GetPostsResBody: {
-			items: components['schemas']['PostDto'][];
-		};
-		PostDto: {
-			/** Format: int64 */
-			id: number;
-			/** Format: date-time */
-			createDate: string;
-			/** Format: date-time */
-			modifyDate: string;
-			/** Format: int64 */
-			authorId: number;
-			authorName: string;
-			title: string;
-			body: string;
-		};
-		RsDataGetPostsResBody: {
-			resultCode: string;
-			/** Format: int32 */
-			statusCode: number;
-			msg: string;
-			data: components['schemas']['GetPostsResBody'];
-		};
-	};
-	responses: never;
-	parameters: never;
-	requestBodies: never;
-	headers: never;
-	pathItems: never;
+  schemas: {
+    Empty: Record<string, never>;
+    RsDataEmpty: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["Empty"];
+    };
+    GetPostsResBody: {
+      items: components["schemas"]["PostDto"][];
+    };
+    PostDto: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date-time */
+      createDate: string;
+      /** Format: date-time */
+      modifyDate: string;
+      /** Format: int64 */
+      authorId: number;
+      authorName: string;
+      title: string;
+      body: string;
+    };
+    RsDataGetPostsResBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["GetPostsResBody"];
+    };
+    GetPostResBody: {
+      item: components["schemas"]["PostDto"];
+    };
+    RsDataGetPostResBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["GetPostResBody"];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 
 export type $defs = Record<string, never>;
@@ -58,21 +73,44 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-	/** 다건 조회 */
-	getPosts: {
-		responses: {
-			/** @description OK */
-			200: {
-				content: {
-					'*/*': components['schemas']['RsDataGetPostsResBody'];
-				};
-			};
-			/** @description Bad Request */
-			400: {
-				content: {
-					'*/*': components['schemas']['RsDataEmpty'];
-				};
-			};
-		};
-	};
+
+  /** 다건 조회 */
+  getPosts: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataGetPostsResBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 단건 조회 */
+  getPost: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataGetPostResBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
 }
