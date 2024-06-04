@@ -29,34 +29,34 @@ import java.util.List;
 public class ApiV1PostController {
     private final PostService postService;
 
-    public record GetPostsResBody(@NonNull List<PostDto> items) {
+    public record PostGetItemsResBody(@NonNull List<PostDto> items) {
     }
 
     @GetMapping
     @Operation(summary = "다건 조회")
-    public RsData<GetPostsResBody> getPosts() {
+    public RsData<PostGetItemsResBody> getItems() {
         List<Post> posts = postService.findAll();
 
         return RsData.of(
-                new GetPostsResBody(
+                new PostGetItemsResBody(
                         posts.stream().map(PostDto::new).toList()
                 )
         );
     }
 
 
-    public record GetPostResBody(@NonNull PostDto item) {
+    public record PostGetItemResBody(@NonNull PostDto item) {
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "단건 조회")
-    public RsData<GetPostResBody> getPost(
+    public RsData<PostGetItemResBody> getItem(
             @PathVariable long id
     ) {
         Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
 
         return RsData.of(
-                new GetPostResBody(
+                new PostGetItemResBody(
                         new PostDto(post)
                 )
         );

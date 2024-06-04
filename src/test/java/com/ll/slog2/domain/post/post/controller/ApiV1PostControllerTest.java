@@ -1,5 +1,6 @@
 package com.ll.slog2.domain.post.post.controller;
 
+import com.ll.slog2.standard.util.Ut;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ public class ApiV1PostControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.?\\d{0,7}";
 
     @Test
     @DisplayName("GET /api/v1/posts")
@@ -38,16 +38,15 @@ public class ApiV1PostControllerTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(ApiV1PostController.class))
-                .andExpect(handler().methodName("getPosts"))
+                .andExpect(handler().methodName("getItems"))
                 .andExpect(jsonPath("$.data.items[0].id", instanceOf(Number.class)))
-                .andExpect(jsonPath("$.data.items[0].createDate", matchesPattern(DATE_PATTERN)))
-                .andExpect(jsonPath("$.data.items[0].modifyDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.items[0].createDate", matchesPattern(Ut.date.DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.items[0].modifyDate", matchesPattern(Ut.date.DATE_PATTERN)))
                 .andExpect(jsonPath("$.data.items[0].authorId", instanceOf(Number.class)))
                 .andExpect(jsonPath("$.data.items[0].authorName", notNullValue()))
                 .andExpect(jsonPath("$.data.items[0].title", notNullValue()))
                 .andExpect(jsonPath("$.data.items[0].body", notNullValue()));
     }
-
 
     @Test
     @DisplayName("GET /api/v1/posts/1")
@@ -61,10 +60,10 @@ public class ApiV1PostControllerTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(handler().handlerType(ApiV1PostController.class))
-                .andExpect(handler().methodName("getPost"))
+                .andExpect(handler().methodName("getItem"))
                 .andExpect(jsonPath("$.data.item.id", instanceOf(Number.class)))
-                .andExpect(jsonPath("$.data.item.createDate", matchesPattern(DATE_PATTERN)))
-                .andExpect(jsonPath("$.data.item.modifyDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.item.createDate", matchesPattern(Ut.date.DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.item.modifyDate", matchesPattern(Ut.date.DATE_PATTERN)))
                 .andExpect(jsonPath("$.data.item.authorId", instanceOf(Number.class)))
                 .andExpect(jsonPath("$.data.item.authorName", notNullValue()))
                 .andExpect(jsonPath("$.data.item.title", notNullValue()))

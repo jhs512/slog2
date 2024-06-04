@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,6 +22,7 @@ public class AuthTokenService {
                 .claims()
                 .add("id", member.getId())
                 .add("username", member.getUsername())
+                .add("authorities", member.getAuthoritiesAsStringList())
                 .build();
 
         Date issuedAt = new Date();
@@ -43,7 +45,8 @@ public class AuthTokenService {
 
         return Map.of(
                 "id", payload.get("id", Integer.class),
-                "username", payload.get("username", String.class)
+                "username", payload.get("username", String.class),
+                "authorities", payload.get("authorities", List.class)
         );
     }
 

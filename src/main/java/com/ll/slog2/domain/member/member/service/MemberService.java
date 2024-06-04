@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,5 +61,9 @@ public class MemberService {
 
     public Optional<Member> findByRefreshToken(String refreshToken) {
         return memberRepository.findByRefreshToken(refreshToken);
+    }
+
+    public List<Member> findAll() {
+        return memberRepository.findAll();
     }
 }

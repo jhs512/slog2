@@ -6,6 +6,10 @@ import lombok.SneakyThrows;
 import java.util.concurrent.TimeUnit;
 
 public class Ut {
+    public static class date {
+        public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.?\\d{0,7}";
+    }
+
     public static class str {
         public static boolean isBlank(String str) {
             return str == null || str.isBlank();

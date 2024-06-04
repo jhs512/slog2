@@ -5,13 +5,41 @@
 
 
 export interface paths {
+  "/api/v1/members": {
+    /** 다건 조회 */
+    get: operations["getItems_1"];
+    /** 회원가입 */
+    post: operations["join"];
+  };
+  "/api/v1/members/login": {
+    /**
+     * 로그인
+     * @description 성공하면 accessToken, refreshToken 쿠키가 생성됨
+     */
+    post: operations["login"];
+  };
   "/api/v1/posts": {
     /** 다건 조회 */
-    get: operations["getPosts"];
+    get: operations["getItems"];
   };
   "/api/v1/posts/{id}": {
     /** 단건 조회 */
-    get: operations["getPost"];
+    get: operations["getItem"];
+  };
+  "/api/v1/members/{id}": {
+    /** 단건 조회 */
+    get: operations["getItem_1"];
+  };
+  "/api/v1/members/me": {
+    /**
+     * 내 정보
+     * @description 현재 로그인한 회원의 정보
+     */
+    get: operations["getMe"];
+  };
+  "/api/v1/members/logout": {
+    /** 로그아웃 */
+    delete: operations["logout"];
   };
 }
 
@@ -27,8 +55,44 @@ export interface components {
       msg: string;
       data: components["schemas"]["Empty"];
     };
-    GetPostsResBody: {
-      items: components["schemas"]["PostDto"][];
+    MemberJoinReqBody: {
+      username: string;
+      password: string;
+      nickname: string;
+    };
+    MemberDto: {
+      /** Format: int64 */
+      id: number;
+      /** Format: date-time */
+      createDate: string;
+      /** Format: date-time */
+      modifyDate: string;
+      username: string;
+      nickname: string;
+    };
+    MemberJoinRespBody: {
+      item: components["schemas"]["MemberDto"];
+    };
+    RsDataMemberJoinRespBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["MemberJoinRespBody"];
+    };
+    MemberLoginReqBody: {
+      username: string;
+      password: string;
+    };
+    MemberLoginRespBody: {
+      item: components["schemas"]["MemberDto"];
+    };
+    RsDataMemberLoginRespBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["MemberLoginRespBody"];
     };
     PostDto: {
       /** Format: int64 */
@@ -43,22 +107,55 @@ export interface components {
       title: string;
       body: string;
     };
-    RsDataGetPostsResBody: {
+    PostGetItemsResBody: {
+      items: components["schemas"]["PostDto"][];
+    };
+    RsDataPostGetItemsResBody: {
       resultCode: string;
       /** Format: int32 */
       statusCode: number;
       msg: string;
-      data: components["schemas"]["GetPostsResBody"];
+      data: components["schemas"]["PostGetItemsResBody"];
     };
-    GetPostResBody: {
+    PostGetItemResBody: {
       item: components["schemas"]["PostDto"];
     };
-    RsDataGetPostResBody: {
+    RsDataPostGetItemResBody: {
       resultCode: string;
       /** Format: int32 */
       statusCode: number;
       msg: string;
-      data: components["schemas"]["GetPostResBody"];
+      data: components["schemas"]["PostGetItemResBody"];
+    };
+    MemberGetItemsResBody: {
+      items: components["schemas"]["MemberDto"][];
+    };
+    RsDataMemberGetItemsResBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["MemberGetItemsResBody"];
+    };
+    MemberGetItemResBody: {
+      item: components["schemas"]["MemberDto"];
+    };
+    RsDataMemberGetItemResBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["MemberGetItemResBody"];
+    };
+    MemberMeRespBody: {
+      item: components["schemas"]["MemberDto"];
+    };
+    RsDataMemberMeRespBody: {
+      resultCode: string;
+      /** Format: int32 */
+      statusCode: number;
+      msg: string;
+      data: components["schemas"]["MemberMeRespBody"];
     };
   };
   responses: never;
@@ -75,12 +172,76 @@ export type external = Record<string, never>;
 export interface operations {
 
   /** 다건 조회 */
-  getPosts: {
+  getItems_1: {
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["RsDataGetPostsResBody"];
+          "*/*": components["schemas"]["RsDataMemberGetItemsResBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 회원가입 */
+  join: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MemberJoinReqBody"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataMemberJoinRespBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /**
+   * 로그인
+   * @description 성공하면 accessToken, refreshToken 쿠키가 생성됨
+   */
+  login: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MemberLoginReqBody"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataMemberLoginRespBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 다건 조회 */
+  getItems: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataPostGetItemsResBody"];
         };
       };
       /** @description Bad Request */
@@ -92,7 +253,7 @@ export interface operations {
     };
   };
   /** 단건 조회 */
-  getPost: {
+  getItem: {
     parameters: {
       path: {
         id: number;
@@ -102,7 +263,66 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["RsDataGetPostResBody"];
+          "*/*": components["schemas"]["RsDataPostGetItemResBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 단건 조회 */
+  getItem_1: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataMemberGetItemResBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /**
+   * 내 정보
+   * @description 현재 로그인한 회원의 정보
+   */
+  getMe: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataMemberMeRespBody"];
+        };
+      };
+      /** @description Bad Request */
+      400: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
+        };
+      };
+    };
+  };
+  /** 로그아웃 */
+  logout: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["RsDataEmpty"];
         };
       };
       /** @description Bad Request */
