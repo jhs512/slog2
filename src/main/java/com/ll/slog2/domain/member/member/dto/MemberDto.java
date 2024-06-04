@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -27,11 +28,23 @@ public class MemberDto {
     @NonNull
     private String nickname;
 
+    @NonNull
+    private String profileImgUrl;
+
+    @NonNull
+    private List<String> authorities;
+
+    @NonNull
+    private boolean social;
+
     public MemberDto(Member member) {
         this.id = member.getId();
         this.createDate = member.getCreateDate();
         this.modifyDate = member.getModifyDate();
         this.username = member.getUsername();
         this.nickname = member.getNickname();
+        this.profileImgUrl = member.getProfileImgUrlOrDefault();
+        this.authorities = member.getAuthoritiesAsStringList();
+        this.social = member.isSocial();
     }
 }

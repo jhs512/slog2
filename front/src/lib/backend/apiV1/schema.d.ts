@@ -69,6 +69,9 @@ export interface components {
       modifyDate: string;
       username: string;
       nickname: string;
+      profileImgUrl: string;
+      authorities: string[];
+      social: boolean;
     };
     MemberJoinRespBody: {
       item: components["schemas"]["MemberDto"];

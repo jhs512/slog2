@@ -1,6 +1,7 @@
 package com.ll.slog2.domain.member.member.entity;
 
 import com.ll.slog2.global.jpa.entity.BaseTime;
+import com.ll.slog2.standard.util.Ut;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
@@ -28,6 +29,7 @@ public class Member extends BaseTime {
     private String nickname;
     @Column(unique = true)
     private String refreshToken;
+    private String profileImgUrl;
 
     public String getName() {
         return nickname;
@@ -51,7 +53,18 @@ public class Member extends BaseTime {
         return authorities;
     }
 
+    @Transient
     public boolean isAdmin() {
         return List.of("system", "admin").contains(getUsername());
+    }
+
+    @Transient
+    public String getProfileImgUrlOrDefault() {
+        return Ut.str.hasLength(profileImgUrl) ? profileImgUrl : "https://placehold.co/640x640?text=O_O";
+    }
+
+    @Transient
+    public boolean isSocial() {
+        return false;
     }
 }
