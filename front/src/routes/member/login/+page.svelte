@@ -50,5 +50,9 @@
 	<div>
 		<div>로그인</div>
 		<button type="submit">로그인</button>
+		<a href={rq.getKakaoLoginUrl()} class="btn">
+			<i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+			카카오로 3초만에 시작하기
+		</a>
 	</div>
 </form>

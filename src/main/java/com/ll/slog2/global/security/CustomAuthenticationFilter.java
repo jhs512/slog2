@@ -12,11 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -83,16 +78,10 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         Map<String, Object> accessTokenData = authTokenService.getDataFrom(accessToken);
 
         long id = (int) accessTokenData.get("id");
+        String username = (String) accessTokenData.get("username");
         List<String> authorities = (List<String>) accessTokenData.get("authorities");
 
-        User user = new User(id + "", "", List.of());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                authorities.stream().map(SimpleGrantedAuthority::new).toList()
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        rq.setLogin(id, username, authorities);
 
         filterChain.doFilter(req, resp);
     }

@@ -4,7 +4,6 @@ import com.ll.slog2.domain.member.member.entity.Member;
 import com.ll.slog2.domain.member.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,11 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. username: " + username));
 
-        User user = new User(
-                String.valueOf(member.getId()),
+        return new SecurityUser(
+                member.getId(),
+                member.getUsername(),
                 member.getPassword(),
                 member.getAuthorities()
         );
-        return user;
     }
 }

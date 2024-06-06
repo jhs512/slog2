@@ -65,6 +65,6 @@ public class Member extends BaseTime {
 
     @Transient
     public boolean isSocial() {
-        return false;
+        return username.startsWith("KAKAO__");
     }
 }

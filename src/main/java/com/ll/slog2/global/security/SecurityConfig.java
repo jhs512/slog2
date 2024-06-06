@@ -11,10 +11,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFilter customAuthenticationFilter;
 
     @Bean
@@ -24,6 +27,8 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(HttpMethod.GET, "/api/*/members", "/api/*/members/{id:[0-9]+}")
                                 .hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/member/socialLogin/{providerTypeCode}", "/member/debugSession")
+                                .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/members", "/api/*/members/login")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/*/members/logout")
@@ -59,6 +64,12 @@ public class SecurityConfig {
                                 formLogin
                                         .permitAll()
                 )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(
+                                        STATELESS
+                                )
+                )
                 .exceptionHandling(
                         exceptionHandling -> exceptionHandling
                                 .authenticationEntryPoint(
@@ -73,7 +84,12 @@ public class SecurityConfig {
                                         }
                                 )
                 )
-                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(
+                        oauth2Login ->
+                                oauth2Login
+                                        .successHandler(customAuthenticationSuccessHandler)
+                );
 
         return http.build();
     }

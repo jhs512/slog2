@@ -4,7 +4,6 @@ import com.ll.slog2.domain.auth.auth.service.AuthTokenService;
 import com.ll.slog2.domain.member.member.dto.MemberDto;
 import com.ll.slog2.domain.member.member.entity.Member;
 import com.ll.slog2.domain.member.member.service.MemberService;
-import com.ll.slog2.global.app.AppConfig;
 import com.ll.slog2.global.exceptions.GlobalException;
 import com.ll.slog2.global.rq.Rq;
 import com.ll.slog2.global.rsData.RsData;
@@ -76,7 +75,6 @@ public class ApiV1MemberController {
     }
 
     @PostMapping("/login")
-    @Transactional
     @Operation(summary = "로그인", description = "성공하면 accessToken, refreshToken 쿠키가 생성됨")
     public RsData<MemberLoginRespBody> login(
             @RequestBody @Valid MemberLoginReqBody reqBody
@@ -89,9 +87,7 @@ public class ApiV1MemberController {
             throw new GlobalException("401-2", "비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = authTokenService.genToken(member, AppConfig.getAccessTokenExpirationSec());
-        rq.setCookie("accessToken", accessToken);
-        rq.setCookie("refreshToken", member.getRefreshToken());
+        rq.setAuthTokenCookie(member);
 
         return RsData.of(
                 "200-1",
@@ -109,7 +105,6 @@ public class ApiV1MemberController {
 
 
     @GetMapping("/me")
-    @Transactional
     @Operation(summary = "내 정보", description = "현재 로그인한 회원의 정보")
     public RsData<MemberMeRespBody> getMe() {
         return RsData.of(
@@ -121,11 +116,9 @@ public class ApiV1MemberController {
 
 
     @DeleteMapping("/logout")
-    @Transactional
     @Operation(summary = "로그아웃")
     public RsData<Empty> logout() {
-        rq.removeCookie("accessToken");
-        rq.removeCookie("refreshToken");
+        rq.removeAuthTokenCookie();
 
         return RsData.OK;
     }

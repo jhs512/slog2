@@ -27,6 +27,11 @@ public class MemberService {
 
     @Transactional
     public RsData<Member> join(String username, String password, String nickname) {
+        return join(username, password, nickname, null);
+    }
+
+    @Transactional
+    public RsData<Member> join(String username, String password, String nickname, String profileImgUrl) {
         findByUsername(username).ifPresent(ignored -> {
             throw new GlobalException("400-1", "%s(은)는 이미 존재하는 아이디입니다.".formatted(username));
         });
@@ -35,16 +40,13 @@ public class MemberService {
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)
+                .profileImgUrl(profileImgUrl)
                 .refreshToken(authTokenService.genRefreshToken())
                 .build();
 
         memberRepository.save(member);
 
         return RsData.of("회원가입이 완료되었습니다.", member);
-    }
-
-    public Member getReferenceById(long id) {
-        return memberRepository.getReferenceById(id);
     }
 
     public long count() {
@@ -65,5 +67,16 @@ public class MemberService {
 
     public List<Member> findAll() {
         return memberRepository.findAll();
+    }
+
+    @Transactional
+    public Member modifyOrJoin(String username, String providerTypeCode, String nickname, String profileImgUrl) {
+        Member member = memberRepository.findByUsername(username).orElseGet(() -> {
+            return join(username, "", nickname, profileImgUrl).getData();
+        });
+
+        member.setNickname(nickname);
+        member.setProfileImgUrl(profileImgUrl);
+        return member;
     }
 }
