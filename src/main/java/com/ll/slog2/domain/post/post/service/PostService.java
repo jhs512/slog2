@@ -47,4 +47,12 @@ public class PostService {
     public List<Post> findAll() {
         return postRepository.findAll();
     }
+
+    @Transactional
+    public RsData<Post> modify(Post post, String title, String body) {
+        post.setTitle(title);
+        post.setBody(body);
+
+        return RsData.of("%d번 글이 수정되었습니다.".formatted(post.getId()), post);
+    }
 }

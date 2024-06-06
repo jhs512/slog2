@@ -1,21 +1,22 @@
 package com.ll.slog2.domain.post.post.controller;
 
+import com.ll.slog2.domain.auth.auth.service.AuthService;
 import com.ll.slog2.domain.post.post.dto.PostDto;
 import com.ll.slog2.domain.post.post.entity.Post;
 import com.ll.slog2.domain.post.post.service.PostService;
 import com.ll.slog2.global.exceptions.GlobalException;
+import com.ll.slog2.global.rq.Rq;
 import com.ll.slog2.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,7 +28,9 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "ApiV1PostController", description = "Post CRUD 컨트롤러")
 public class ApiV1PostController {
+    private final AuthService authService;
     private final PostService postService;
+    private final Rq rq;
 
     public record PostGetItemsResBody(@NonNull List<PostDto> items) {
     }
@@ -58,6 +61,38 @@ public class ApiV1PostController {
         return RsData.of(
                 new PostGetItemResBody(
                         new PostDto(post)
+                )
+        );
+    }
+
+
+    public record PostModifyReqBody(
+            @NotBlank String title,
+            @NotBlank String body
+    ) {
+    }
+
+    public record PostModifyRespBody(
+            @NonNull PostDto item
+    ) {
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    @Operation(summary = "수정")
+    public RsData<PostModifyRespBody> modify(
+            @PathVariable long id,
+            @RequestBody @Valid PostModifyReqBody reqBody
+    ) {
+        Post post = postService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        authService.checkCanModifyPost(rq.getMember(), post);
+
+        RsData<Post> modifyRs = postService.modify(post, reqBody.title, reqBody.body);
+
+        return modifyRs.newDataOf(
+                new PostModifyRespBody(
+                        new PostDto(modifyRs.getData())
                 )
         );
     }
