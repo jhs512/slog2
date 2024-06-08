@@ -10,6 +10,10 @@ export interface paths {
 		/** 수정 */
 		put: operations['modify'];
 	};
+	'/api/v1/posts/temp': {
+		/** 임시 글 생성 */
+		post: operations['makeTemp'];
+	};
 	'/api/v1/members': {
 		/** 다건 조회 */
 		get: operations['getItems_1'];
@@ -59,6 +63,8 @@ export interface components {
 		PostModifyReqBody: {
 			title: string;
 			body: string;
+			published: boolean;
+			listed: boolean;
 		};
 		PostDto: {
 			/** Format: int64 */
@@ -89,6 +95,16 @@ export interface components {
 			statusCode: number;
 			msg: string;
 			data: components['schemas']['PostModifyRespBody'];
+		};
+		MakeTempResponseBody: {
+			item: components['schemas']['PostDto'];
+		};
+		RsDataMakeTempResponseBody: {
+			resultCode: string;
+			/** Format: int32 */
+			statusCode: number;
+			msg: string;
+			data: components['schemas']['MakeTempResponseBody'];
 		};
 		MemberJoinReqBody: {
 			username: string;
@@ -234,6 +250,23 @@ export interface operations {
 			200: {
 				content: {
 					'*/*': components['schemas']['RsDataPostModifyRespBody'];
+				};
+			};
+			/** @description Bad Request */
+			400: {
+				content: {
+					'*/*': components['schemas']['RsDataEmpty'];
+				};
+			};
+		};
+	};
+	/** 임시 글 생성 */
+	makeTemp: {
+		responses: {
+			/** @description OK */
+			200: {
+				content: {
+					'*/*': components['schemas']['RsDataMakeTempResponseBody'];
 				};
 			};
 			/** @description Bad Request */

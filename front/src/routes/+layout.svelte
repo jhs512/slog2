@@ -17,6 +17,9 @@
 	{/if}
 	{#if rq.isLogin()}
 		<li>
+			<button onclick={() => rq.goToTempPostEditPage()}> 새 글</button>
+		</li>
+		<li>
 			<button onclick={() => rq.logoutAndRedirect('/')}> 로그아웃</button>
 		</li>
 		<li>

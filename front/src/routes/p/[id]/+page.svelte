@@ -20,7 +20,7 @@
 	{/if}
 </svelte:head>
 
-<h1>{$page.params.id}번 SURL 페이지</h1>
+<h1>{$page.params.id}번 글</h1>
 
 {#if post}
 	<div>

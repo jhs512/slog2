@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -80,9 +81,28 @@ public class ApiV1PostController {
     }
 
 
+    public record MakeTempResponseBody(@NonNull PostDto item) {
+    }
+
+    @Transactional
+    @PostMapping("/temp")
+    @Operation(summary = "임시 글 생성")
+    public RsData<MakeTempResponseBody> makeTemp() {
+        RsData<Post> findTempOrMakeRsData = postService.findTempOrMake(rq.getMember());
+
+        return findTempOrMakeRsData.newDataOf(
+                new MakeTempResponseBody(
+                        postToDto(findTempOrMakeRsData.getData())
+                )
+        );
+    }
+
+
     public record PostModifyReqBody(
             @NotBlank String title,
-            @NotBlank String body
+            @NotBlank String body,
+            @NotNull boolean published,
+            @NotNull boolean listed
     ) {
     }
 
@@ -102,7 +122,7 @@ public class ApiV1PostController {
 
         authService.checkCanModifyPost(rq.getMember(), post);
 
-        RsData<Post> modifyRs = postService.modify(post, reqBody.title, reqBody.body);
+        RsData<Post> modifyRs = postService.modify(post, reqBody.title, reqBody.body, reqBody.published, reqBody.listed);
 
         return modifyRs.newDataOf(
                 new PostModifyRespBody(

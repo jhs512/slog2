@@ -186,6 +186,16 @@ class Rq {
 			fetch
 		});
 	}
+
+	// POST
+	public async goToTempPostEditPage() {
+		const { data } = await this.getClient().POST('/api/v1/posts/temp');
+
+		if (data) {
+			this.msgInfo(data.msg);
+			this.goto(`/p/${data.data.item.id}/edit`);
+		}
+	}
 }
 
 const rq = new Rq();

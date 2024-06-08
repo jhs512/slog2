@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -51,10 +52,31 @@ public class PostService {
     }
 
     @Transactional
-    public RsData<Post> modify(Post post, String title, String body) {
+    public RsData<Post> modify(Post post, String title, String body, boolean published, boolean listed) {
         post.setTitle(title);
         post.setBody(body);
+        post.setPublished(published);
+        post.setListed(listed);
 
         return RsData.of("%d번 글이 수정되었습니다.".formatted(post.getId()), post);
+    }
+
+    @Transactional
+    public RsData<Post> findTempOrMake(Member author) {
+        AtomicBoolean isNew = new AtomicBoolean(false);
+
+        Post post = postRepository.findTop1ByAuthorAndPublishedAndTitleOrderByIdDesc(
+                author,
+                false,
+                "임시글"
+        ).orElseGet(() -> {
+            isNew.set(true);
+            return write(author, "임시글", "", false, false).getData();
+        });
+
+        return RsData.of(
+                isNew.get() ? "임시글(%d번)이 생성되었습니다.".formatted(post.getId()) : "%d번 임시글을 불러왔습니다.".formatted(post.getId()),
+                post
+        );
     }
 }
