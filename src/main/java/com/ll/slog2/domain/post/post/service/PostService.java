@@ -22,12 +22,14 @@ public class PostService {
     }
 
     @Transactional
-    public RsData<Post> write(Member author, String title, String body) {
+    public RsData<Post> write(Member author, String title, String body, boolean published, boolean listed) {
         Post post = Post
                 .builder()
                 .author(author)
                 .title(title)
                 .body(body)
+                .published(published)
+                .published(published)
                 .build();
 
         postRepository.save(post);

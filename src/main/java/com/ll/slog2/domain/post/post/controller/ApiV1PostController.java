@@ -32,6 +32,20 @@ public class ApiV1PostController {
     private final PostService postService;
     private final Rq rq;
 
+
+    private PostDto postToDto(Post post) {
+        PostDto dto = new PostDto(post);
+
+        if (rq.isLogin()) {
+            dto.setActorCanRead(authService.canGetPost(rq.getMember(), post));
+            dto.setActorCanEdit(authService.canModifyPost(rq.getMember(), post));
+            dto.setActorCanDelete(authService.canDeletePost(rq.getMember(), post));
+        }
+
+        return dto;
+    }
+
+
     public record PostGetItemsResBody(@NonNull List<PostDto> items) {
     }
 
@@ -42,7 +56,7 @@ public class ApiV1PostController {
 
         return RsData.of(
                 new PostGetItemsResBody(
-                        posts.stream().map(PostDto::new).toList()
+                        posts.stream().map(this::postToDto).toList()
                 )
         );
     }
@@ -60,7 +74,7 @@ public class ApiV1PostController {
 
         return RsData.of(
                 new PostGetItemResBody(
-                        new PostDto(post)
+                        postToDto(post)
                 )
         );
     }

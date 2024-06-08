@@ -17,7 +17,7 @@ public class AuthService {
             throw new GlobalException("403-1", "권한이 없습니다.");
     }
 
-    private boolean canGetPost(Member actor, Post post) {
+    public boolean canGetPost(Member actor, Post post) {
         if (actor == null) return false;
         if (post == null) return false;
 
@@ -30,7 +30,7 @@ public class AuthService {
             throw new GlobalException("403-1", "권한이 없습니다.");
     }
 
-    private boolean canDeletePost(Member actor, Post post) {
+    public boolean canDeletePost(Member actor, Post post) {
         return canGetPost(actor, post);
     }
 
@@ -40,7 +40,7 @@ public class AuthService {
             throw new GlobalException("403-1", "권한이 없습니다.");
     }
 
-    private boolean canModifyPost(Member actor, Post post) {
+    public boolean canModifyPost(Member actor, Post post) {
         return canGetPost(actor, post);
     }
     // Post 관련 끝

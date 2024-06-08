@@ -42,6 +42,12 @@
 	<div>
 		내용 : {post.body}
 	</div>
+
+	<div>
+		{#if post.actorCanEdit}
+			<a href="/p/{post.id}/edit">수정</a>
+		{/if}
+	</div>
 {:else if errorMessage}
 	<div>{errorMessage}</div>
 {/if}

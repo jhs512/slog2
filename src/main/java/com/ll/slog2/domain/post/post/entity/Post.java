@@ -21,4 +21,8 @@ public class Post extends BaseTime {
     private String body;
     @ManyToOne
     private Member author;
+    @Column(columnDefinition = "BOOLEAN default false")
+    private boolean published;
+    @Column(columnDefinition = "BOOLEAN default false")
+    private boolean listed;
 }

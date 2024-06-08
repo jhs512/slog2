@@ -24,7 +24,9 @@
 		<li>
 			<a href="/p/{post.id}">{post.id}</a> : {post.title}
 			<br />
-			{post.body}
+			{#if post.actorCanEdit}
+				<a href="/p/{post.id}/edit">수정</a>
+			{/if}
 		</li>
 	{/each}
 </ul>

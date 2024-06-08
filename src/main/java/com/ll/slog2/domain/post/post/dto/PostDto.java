@@ -3,6 +3,7 @@ package com.ll.slog2.domain.post.post.dto;
 import com.ll.slog2.domain.post.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,28 @@ public class PostDto {
     @NonNull
     private String body;
 
+    @NonNull
+    private boolean published;
+
+    @NonNull
+    private boolean listed;
+
+    @Setter
+    private Boolean actorCanRead;
+
+    @Setter
+    private Boolean actorCanEdit;
+
+    @Setter
+    private Boolean actorCanDelete;
+
+    @Setter
+    private Boolean actorCanLike;
+
+    @Setter
+    private Boolean actorCanCancelLike;
+
+
     public PostDto(Post post) {
         this.id = post.getId();
         this.createDate = post.getCreateDate();
@@ -41,5 +64,7 @@ public class PostDto {
         this.authorName = post.getAuthor().getName();
         this.title = post.getTitle();
         this.body = post.getBody();
+        this.published = post.isPublished();
+        this.listed = post.isListed();
     }
 }

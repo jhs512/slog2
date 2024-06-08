@@ -44,7 +44,7 @@
 
 	<div>
 		<div>비밀번호</div>
-		<input type="password" name="password" placeholder="비밀번호" />
+		<input type="password" name="password" placeholder="비밀번호" autoComplete="off" />
 	</div>
 
 	<div>
